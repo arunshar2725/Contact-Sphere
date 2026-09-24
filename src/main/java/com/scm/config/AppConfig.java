@@ -9,7 +9,7 @@ import com.cloudinary.utils.ObjectUtils;
 @Configuration
 public class AppConfig {
 
-    @Value("${cloudinary.cloud.name}")
+    @Value("${CLOUDINARY_NAME:dummy}")
     private String cloudName;
 
     @Value("${cloudinary.api.key}")

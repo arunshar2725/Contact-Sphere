@@ -1,32 +1,61 @@
 package com.scm.Services.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.client.RestClient;
 
 import com.scm.Services.EmailService;
 
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Autowired
-    private JavaMailSender eMailSender;
+    private final RestClient restClient;
 
-    @Value("${spring.mail.username}")
-    private String fromEmail;
+    @Value("${brevo.api-key}")
+    private String brevoApiKey;
+
+    @Value("${brevo.sender-email}")
+    private String senderEmail;
+
+    @Value("${brevo.sender-name:ContactSphere}")
+    private String senderName;
+
+    public EmailServiceImpl() {
+        this.restClient = RestClient.builder()
+                .baseUrl("https://api.brevo.com")
+                .build();
+    }
 
     @Override
     public void sendEmail(String to, String subject, String body) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        message.setFrom("arun1sharma2725@gmail.com");
-        eMailSender.send(message);
+        Map<String, Object> requestBody = Map.of(
+                "sender", Map.of(
+                        "name", senderName,
+                        "email", senderEmail
+                ),
+                "to", List.of(
+                        Map.of(
+                                "email", to
+                        )
+                ),
+                "subject", subject,
+                "textContent", body
+        );
 
+        restClient.post()
+                .uri("/v3/smtp/email")
+                .header("api-key", brevoApiKey)
+                .header("accept", "application/json")
+                .header("content-type", "application/json")
+                .body(requestBody)
+                .retrieve()
+                .toBodilessEntity();
+
+        System.out.println("Email sent successfully to " + to);
     }
 
     @Override
@@ -38,5 +67,4 @@ public class EmailServiceImpl implements EmailService {
     public void sendEmailWithAttachment() {
 
     }
-
 }

@@ -49,7 +49,6 @@ public class UserServiceImpl implements UserService {
 
         // set user role
 
-        user.setRoleList(List.of(AppConstants.ROLE_USER));
 
         String emailToken = UUID
                 .randomUUID()

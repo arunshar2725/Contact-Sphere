@@ -2,26 +2,26 @@ package com.scm.entities;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity(name = "user")
@@ -32,18 +32,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @Builder
 public class User implements UserDetails {
+
     @Id
     private String userId;
+
     @Column(name = "user_name", nullable = false)
     private String name;
+
     @Column(unique = true, nullable = false)
     private String email;
+
     @Getter(value = AccessLevel.NONE)
     private String password;
+
     @Column(length = 1000)
     private String about;
+
     @Column(length = 1000)
     private String profilePic;
+
     private String phoneNumber;
 
     @Getter(value = AccessLevel.NONE)
@@ -52,33 +59,28 @@ public class User implements UserDetails {
     private boolean emailVerified = false;
     private boolean phoneVerified = false;
 
-    // SELF,GOOGLE,FACEBOOK,TWITTER,LINKEDIN,GITHUB
+    // SELF, GOOGLE, FACEBOOK, TWITTER, LINKEDIN, GITHUB
     @Enumerated(value = EnumType.STRING)
     private Providers provider = Providers.SELF;
+
     private String providerUserId;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
     public List<Contact> contacts = new ArrayList<>();
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roleList = new ArrayList<>();
 
     private String emailToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // The Visual Flow
-        // Source: List<String> ["USER", "ADMIN"]
-        // Stream: "USER" ----> "ADMIN" (moving one by one)
-        // Map: SGA("USER") ----> SGA("ADMIN") (wrapped into objects)
-        // Collect: [SGA("USER"), SGA("ADMIN")] (put back into a List)
-        Collection<SimpleGrantedAuthority> roles = roleList.stream().map(role -> new SimpleGrantedAuthority(role))
-                .collect(Collectors.toList());
-        return roles;
+        return List.of();
     }
 
-    // for this project
-    // email id hi h username
+    // Email ID is used as username
     @Override
     public String getUsername() {
         return this.email;
@@ -108,5 +110,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return this.enabled;
     }
-
 }

@@ -33,7 +33,6 @@ public class Application  implements CommandLineRunner {
 		user.setName("admin");
 		user.setEmail("admin@gmail.com");
 		user.setPassword(passwordEncoder.encode("admin"));
-		user.setRoleList(List.of(AppConstants.ROLE_USER));
 		user.setEmailVerified(true);
 		user.setEnabled(true);
 		user.setAbout("This is dummy user created initially");

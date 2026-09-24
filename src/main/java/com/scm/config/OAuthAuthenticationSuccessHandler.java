@@ -47,7 +47,6 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
         user.setUserId(UUID.randomUUID().toString());
         user.setEmailVerified(true);
         user.setEnabled(true);
-        user.setRoleList(List.of(AppConstants.ROLE_USER));
 
         // ================================
         // GOOGLE LOGIN

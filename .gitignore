@@ -36,3 +36,7 @@ build/
 # ✅ Never push these to GitHub
 application-dev.properties
 application-prod.properties
+# Generated/local files
+node_modules/
+hs_err_pid*.log
+about_rendered.html

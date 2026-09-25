@@ -32,11 +32,15 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
 
+          System.out.println(">>> authenticationProvider START");
+
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
 
         daoAuthenticationProvider.setUserDetailsService(userDetailService);
 
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+
+          System.out.println(">>> authenticationProvider END");
 
         return daoAuthenticationProvider;
     }
@@ -44,6 +48,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
+ System.out.println(">>> securityFilterChain START");
+        
         // configuartion
         // url configuration kiya h kon public hogi kon private hogi
         httpSecurity.authorizeHttpRequests(authorize -> {
@@ -83,13 +89,21 @@ public class SecurityConfig {
             oauth2.successHandler(handler);
         });
 
-        return httpSecurity.build();
+
+      SecurityFilterChain result = httpSecurity.build();
+
+    System.out.println(">>> securityFilterChain END");
+
+    return result;
 
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
+    System.out.println(">>> passwordEncoder START");
         return new BCryptPasswordEncoder();
+    System.out.println(">>> passwordEncoder END");
     }
 
 

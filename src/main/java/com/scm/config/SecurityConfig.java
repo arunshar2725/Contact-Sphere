@@ -98,13 +98,17 @@ public class SecurityConfig {
 
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
+  @Bean
+public PasswordEncoder passwordEncoder() {
 
     System.out.println(">>> passwordEncoder START");
-        return new BCryptPasswordEncoder();
+
+    PasswordEncoder encoder = new BCryptPasswordEncoder();
+
     System.out.println(">>> passwordEncoder END");
-    }
+
+    return encoder;
+}
 
 
 }
